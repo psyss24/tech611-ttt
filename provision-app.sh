@@ -13,10 +13,6 @@ sudo apt-get install nginx -y
 git clone https://github.com/psyss24/tech611-ttt
 cd tech611-ttt
 
-unzip app.zip
-cd app
-
-
 # download script to prepare to install node js 
 curl -sL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
 
