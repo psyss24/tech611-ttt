@@ -12,7 +12,7 @@
 
 The deployment process for the app involves:
 
-- Installing the required software.
+- Updating the VM.
 - Getting the application code onto the VM.
 - Installing the application’s dependencies.
 - Starting the application.
@@ -46,7 +46,7 @@ For example:
 ```bash
 scp -i ~/.ssh/your-key.pem prov-app.sh ubuntu@<VM-IP>:~
 ```
-This uses the SSH private key to authenticate with the VM and copies app.zip into the Ubuntu user’s home directory.
+This uses the SSH private key to authenticate with the VM and copies the script into the Ubuntu user’s home directory (~).
 
 ### Method 2 – Git
 
@@ -58,9 +58,7 @@ git clone https://github.com/psyss24/tech611-ttt
 cd tech611-ttt
 ```
 
-This downloads the repository onto the VM, extracts the application ZIP file, and changes into the application directory.
-This method means the application does not need to be manually copied from the local machine.
-
+This downloads the repository onto the VM and changes into the application directory.
 
 ## How the script prepares the VM
 
@@ -103,7 +101,7 @@ Without ```&```:
 ```bash
 npm start
 ```
-the terminal remains attached to the application process.
+the terminal remains hanging to the apps process
 
 ## Automated Deployment Script
 
