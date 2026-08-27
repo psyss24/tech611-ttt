@@ -90,19 +90,17 @@ npm install
 
 ## Running the Application
 
-From inside the application’s directory, run:
-```bash
-npm start &
-```
-The npm start command runs the start script defined in package.json.
+From inside the application’s directory, our script uses PM2; PM2 runs the application as a managed background process, so the terminal is returned to the user while the application continues running.
 
-The & runs the application as a background process; this allows the terminal to return control to the user while the application continues running.
-
-Without &:
+After cloning the repo and moving into the correct directory, our script will run:
 ```bash
-npm start
+pm2 stop app
 ```
-the terminal remains attached to the application process.
+This command makes sure that if the app was previously running, it will now stop; if the app was not running the command fails and the script moves onto to the next step:
+```bash
+pm2 start npm --name "app" -- start
+```
+This tells pm2 to run the npm start command (which itself is defined in the package.json file in the app directory), this process will have the name “app”. We name the process app in this case so that if the script is ran again, the earlier command of ```bash pm2 stop app``` will stop this particular process ensuring idempotency.
 
 ## Reverse Proxy Configuration
 
