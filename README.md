@@ -16,7 +16,6 @@ The deployment process for the app involves:
 - Getting the application code onto the VM.
 - Installing the application’s dependencies.
 - Starting the application with pm2.
-
 ## Dependencies
 
 The following software is required on the VM:
