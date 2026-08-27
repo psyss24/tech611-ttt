@@ -100,7 +100,7 @@ This command makes sure that if the app was previously running, it will now stop
 ```bash
 pm2 start npm --name "app" -- start
 ```
-This tells pm2 to run the npm start command (which itself is defined in the package.json file in the app directory), this process will have the name “app”. We name the process app in this case so that if the script is ran again, the earlier command of ```bash pm2 stop app``` will stop this particular process ensuring idempotency.
+This tells pm2 to run the npm start command (which itself is defined in the package.json file in the app directory), this process will have the name “app”. We name the process app in this case so that if the script is ran again, the earlier command of ```pm2 stop app``` will stop this particular process ensuring idempotency.
 
 ## Reverse Proxy Configuration
 
