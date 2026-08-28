@@ -49,8 +49,6 @@ scp -i ~/.ssh/your-key.pem prov-app.sh ubuntu@<VM-IP>:~
 ```
 This uses the SSH private key to authenticate with the VM and copies app.zip into the Ubuntu user’s home directory.
 
-
-
 ### Method 2 – Git
 
 The application and script can also be downloaded directly onto the VM from GitHub. 
@@ -101,6 +99,14 @@ This command makes sure that if the app was previously running, it will now stop
 pm2 start npm --name "app" -- start
 ```
 This tells pm2 to run the npm start command (which itself is defined in the package.json file in the app directory), this process will have the name “app”. We name the process app in this case so that if the script is ran again, the earlier command of ```pm2 stop app``` will stop this particular process ensuring idempotency.
+
+## Checking the Application
+
+The PM2 process can be checked using:
+
+```bash
+pm2 status
+```
 
 ## Reverse Proxy Configuration
 
