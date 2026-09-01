@@ -12,6 +12,9 @@
   - [2-tier deployment](#2-tier-deployment)
     - [Manual deployment of database](#manual-deployment-of-database)
     - [Deployment of database with bash script](#deployment-of-database-with-bash-script)
+  - [User Data](#user-data)
+    - [what to expect when using user data on the vm](#what-to-expect-when-using-user-data-on-the-vm)
+  - [VM Images \& AMIs](#vm-images--amis)
 
 The deployment process for the app involves:
 
@@ -142,5 +145,59 @@ This allows a newly prepared VM to be configured and have the application starte
 
 ## 2-tier deployment
 ### Manual deployment of database
+We can also deploy the app on a vm whilst deploying the database on a seperate VM; though here we will need to ensure that the database can only receive traffic from our app VM so this will need to be configured in the db VM's security group.
 
+We need to install the mongo db gpg key via:
+```bash
+curl -fsSL https://pgp.mongodb.com/server-8.2.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-8.2.gpg \
+   --dearmor
+```
+before updating the source list and installing mongo db:
+```bash
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.2.list
+
+sudo apt-get update
+
+
+sudo apt-get install -y \
+    mongodb-org=8.2.5 \
+    mongodb-org-database=8.2.5 \
+    mongodb-org-server=8.2.5 \
+    mongodb-mongosh \
+    mongodb-org-shell=8.2.5 \
+    mongodb-org-mongos=8.2.5 \
+    mongodb-org-tools=8.2.5 \
+    mongodb-org-database-tools-extra=8.2.5
+```
+
+Next we configure the bindIp (which tells MongoDB what IPs it should listen on) to change from only accepting its own IP, to allowing any IP to access it. Note that the bindIp is distinct from the security group for the db VM; which we configured to only accept our IP/security group from the app VM. This setup allows our public facing app VM to talk to the private db VM, but someone else cannot connect to the db VM directly.
+
+The bindIp can be configured to accepting anyone via modifying its config file:
+```bash
+sudo sed -i 's/bindIp: 127.0.0.1/bindIp: 0.0.0.0/' /etc/mongod.conf
+```
+Finally we enable mongodb so it launches when the VM starts, and start it.
+```bash
+sudo systemctl enable mongod
+
+sudo systemctl start mongod
+```
 ### Deployment of database with bash script
+Database can also be deployed using the prov-app-db.sh scripts in scripts/. This can also be pasted into user data for the database VM, meaning you will not need to connect to it or run anything on it (AWS will run it for you).
+
+## User Data 
+- User Data refers to the AWS feature that allows you to run a bash script (with root priveliges) on a new VM as soon as the VM is able to
+  - this can be accessde on the configuration screen for seetting up a fresh VM 
+  - this allows you to run a bash script without having to connect to the VM
+### what to expect when using user data on the vm
+- Whilst the VM is setting up, you will not be able to connect to the server 
+- once nginx is installed you will see the nginx home page
+- eventually the reverse proxy is configured and it will redirect you to port 3000, but there is no app running on it yet
+- once the repo has been installed and pm2 runs the app, we will see the app running 
+
+## VM Images & AMIs
+- an image is a collection of files/folders, images usually contain an OS (at a minimum), but can include different softwares
+- we can create an image that already has the collection of software require to install the app which elimates the need of a bash script for *downloading* the software teh app requires
+- we do however need to run the app, this can be done via user data or connecting to the VM as before.
+- packer -> lets you take a base machine image, run a custom bash script and then save the updated machine as a new image (or AMI in AWS)
