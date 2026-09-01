@@ -9,6 +9,9 @@
   - [Running the Application](#running-the-application)
   - [Reverse Proxy Configuration](#reverse-proxy-configuration)
   - [Deployment Script Steps](#deployment-script-steps)
+  - [2-tier deployment](#2-tier-deployment)
+    - [Manual deployment of database](#manual-deployment-of-database)
+    - [Deployment of database with bash script](#deployment-of-database-with-bash-script)
 
 The deployment process for the app involves:
 
@@ -135,3 +138,9 @@ The script:
 14. Starts the application using PM2
 
 This allows a newly prepared VM to be configured and have the application started using a single script.
+
+
+## 2-tier deployment
+### Manual deployment of database
+
+### Deployment of database with bash script
