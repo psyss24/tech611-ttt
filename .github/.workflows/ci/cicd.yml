@@ -1,0 +1,49 @@
+name: ci cd pipeline
+on:
+  push: 
+    branches:
+      - dev
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get code
+        uses: actions/checkout@v4
+      - name: install dependencies
+        run: npm ci
+        working-directory: ./app
+      - name: run tests
+        run: npm run test
+        working-directory: ./app
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: get code
+        uses: actions/checkout@v4
+      - name: merge dev to main
+        run: |
+          git config user.name "psyss24"
+          git config user.email "psyss24@nottingham.ac.uk"
+          git fetch origin
+          git checkout main
+          git merge origin/dev
+          git push origin main
+
+      - name: connect to ec2 instance
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
+        run: | 
+          echo "$PRIVATE_KEY" > github-ec2.pem && chmod 600 github-ec2.pem
+          ssh -o StrictHostkeyChecking=no -i github-ec2.pem ${USER}@${HOST} << 'EOF'
+            cd ~/tech611-ttt/app
+            git pull origin main
+            npm install
+            pm2 restart app
+          EOF
