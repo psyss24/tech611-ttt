@@ -47,7 +47,7 @@ jobs:
           ssh -o StrictHostkeyChecking=no -i github-ec2.pem ${USER}@${HOST} << 'EOF'
             sudo chown -R ubuntu:ubuntu /tech611-ttt
             cd /tech611-ttt/app
-            git pull origin main
-            npm install
+            git fetch origin
+            git reset --hard origin/main
             pm2 restart app || pm2 start npm --name "app" -- start
-          EOF
+            EOF
