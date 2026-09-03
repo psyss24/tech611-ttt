@@ -49,4 +49,4 @@ jobs:
             sudo chown -R ubuntu:ubuntu /tech611-ttt
             cd /tech611-ttt/app
             pm2 restart app || pm2 start npm --name "app" -- start
-            EOF
+          EOF
