@@ -97,8 +97,7 @@ function getMongoFallbackMessage(reason) {
 }
 
 function getFooterVersionStamp() {
-	const configuredTimestamp = String(process.env.APP_FOOTER_TIMESTAMP || '').trim();
-	return configuredTimestamp ? `${APP_VERSION} ${configuredTimestamp}` : APP_VERSION;
+	return `${APP_VERSION} 03/09/2026 14:12`;
 }
 
 function defaultGameState() {
