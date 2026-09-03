@@ -39,6 +39,7 @@ function normalizeGameState(game) {
 	normalized.winningLine = Array.isArray(game.winningLine) ? [...game.winningLine] : [];
 
 	return normalized;
+	
 }
 
 function normalizeScoreboard(entries) {
