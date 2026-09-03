@@ -44,7 +44,7 @@ jobs:
         run: | 
           echo "$PRIVATE_KEY" > github-ec2.pem && chmod 600 github-ec2.pem
           ssh -o StrictHostkeyChecking=no -i github-ec2.pem ${USER}@${HOST} << 'EOF'
-            cd ~/tech611-ttt/app
+            cd /tech611-ttt/app
             git pull origin main
             npm install
             pm2 restart app
