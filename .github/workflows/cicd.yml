@@ -34,7 +34,7 @@ jobs:
           git config user.email "psyss24@nottingham.ac.uk"
           git fetch origin
           git checkout main
-          git merge origin/dev
+          git merge -X theirs origin/dev
           git push origin main
 
       - name: connect to ec2 instance
