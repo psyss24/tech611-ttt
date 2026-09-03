@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: get code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  
       - name: merge dev to main
         run: |
           git config user.name "psyss24"
