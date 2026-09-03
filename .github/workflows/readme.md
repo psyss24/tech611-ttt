@@ -6,6 +6,7 @@
     - [Merging dev into main](#merging-dev-into-main)
     - [Deployment to the VM](#deployment-to-the-vm)
   - [Overall Pipeline](#overall-pipeline)
+  - [Deployment using rsync](#deployment-using-rsync)
 
 
 we use a GitHub Actions workflow to automatically test and deploy changes which is triggered whenever code is pushed to the dev branch.
@@ -164,3 +165,25 @@ The complete deployment process can be summarised as:
 14. Nginx continues to act as the reverse proxy, allowing users to access the newly deployed application through port 80.
 
 This means that changes can be tested and deployed to the production VM automatically without manually connecting to the VM and updating the application.
+
+## Deployment using rsync
+
+The CI/CD pipeline uses rsync to transfer the application files from the GitHub Actions runner to the EC2 VM.
+
+The rsync command used is:
+```yml
+rsync -avz -e "ssh -o StrictHostKeyChecking=no -i github-ec2.pem" ./app/ ${USER}@${HOST}:/tech611-ttt/app/
+```
+The command can be broken down as follows:
+
+-  rsync: synchronises files between the GitHub Actions runner and the EC2 VM
+-   -a:uses archive mode, preserving file permissions, timestamps and directory structure
+-   -v: verbose option so that the files being transferred are shown in the GitHub Actions log
+-   -z: compresses the files during transfer to reduce the amount of data sent over the network
+-   -e: remote shell to use for the transfer (ssh)
+-   -o StrictHostKeyChecking=no: prevent SSH from waiting for confirmation of the VM’s host key, which is needed here since the workflow runs automatically
+-   -i github-ec2.pem: private SSH key used to authenticate with the VM
+-  `${USER}@${HOST}`: username and host address stored in the GitHub Actions secrets
+-    /tech611-ttt/app/: destination directory on the EC2 VM
+
+Using rsync means the VM does not need to pull the application code from GitHub. Instead, the GitHub Actions runner directly transfers the application files to the VM.
