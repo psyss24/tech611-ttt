@@ -44,10 +44,9 @@ jobs:
           USER: ${{ secrets.USER }}
         run: | 
           echo "$PRIVATE_KEY" > github-ec2.pem && chmod 600 github-ec2.pem
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -i github-ec2.pem" ./app/ ${USER}@${HOST}:/tech611-ttt/app/
           ssh -o StrictHostkeyChecking=no -i github-ec2.pem ${USER}@${HOST} << 'EOF'
             sudo chown -R ubuntu:ubuntu /tech611-ttt
             cd /tech611-ttt/app
-            git fetch origin
-            git reset --hard origin/main
             pm2 restart app || pm2 start npm --name "app" -- start
             EOF
